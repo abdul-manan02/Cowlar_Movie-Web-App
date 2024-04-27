@@ -16,7 +16,7 @@ router.delete('/dropTable', dropUserTable);
 
 router.route('/').get(getUsers).post(createUser);
 
-router.route('/userId/:userId')
+router.route('/userId/:id')
     .get(getUser)
     .put(updateUser)
     .delete(deleteUser);

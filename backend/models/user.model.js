@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import BaseSQLModel from '../utils/baseSqlModel.js';
 import db from '../utils/db.js'
-import userSchema from '../sqlSchemas/user.js';
+import userSchema from '../sqlSchemas/user.schema.js';
 
 class UserModel extends BaseSQLModel {
   constructor() {

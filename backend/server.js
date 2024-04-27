@@ -3,10 +3,13 @@ const routePrefix = process.env.API_ROUTE_PREFIX || '/api/v1';
 import express from 'express'
 const app = express();
 import userRouter from './routes/user.route.js';
+import movieRouter from './routes/movie.route.js';
+import reviewRouter from './routes/review.route.js';
 
 app.use(express.json())
 app.use(routePrefix + '/users', userRouter);
-
+app.use(routePrefix + '/movies', movieRouter);
+app.use(routePrefix + '/reviews', reviewRouter);
 
 const port = process.env.PORT || 3000;
 

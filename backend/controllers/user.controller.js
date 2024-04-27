@@ -38,7 +38,7 @@ const createUser = async (req, res) => {
 };
   
 const getUser = async (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     try {
         const user = await userModel.findById(userId);
 
@@ -52,7 +52,7 @@ const getUser = async (req, res) => {
 };
   
 const updateUser = async (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     try {
         const allowedFields = ['name', 'email', 'password'];
         const isValidRequest = Object.keys(req.body).every(field => allowedFields.includes(field));
@@ -73,12 +73,9 @@ const updateUser = async (req, res) => {
 };
   
 const deleteUser = async (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.params.id;
     try {
         const deletedRows = await userModel.delete(userId);
-        
-        console.log(userId)
-        console.log(deletedRows)
 
         if (deletedRows === 0)
             res.status(404).json({ error: 'User not found' });
