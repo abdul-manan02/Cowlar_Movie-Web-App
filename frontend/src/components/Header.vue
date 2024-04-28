@@ -2,7 +2,7 @@
   <div class="h-[55vh] overflow-hidden relative">
     <img src="../assets/JohnWick.png" alt="" class="w-full object-contain" />
     <div class="absolute top-3 left-3 w-full text-white bg-transparent">
-      <nav class="flex items-center">
+      <div class="flex justify-between">
         <div class="flex items-center">
           <img src="../assets/logo.png" alt="" />
           <h2>MovieMania</h2>
@@ -41,7 +41,7 @@
           </button>
         </div>
         <div></div>
-      </nav>
+      </div>
     </div>
   </div>
 </template>

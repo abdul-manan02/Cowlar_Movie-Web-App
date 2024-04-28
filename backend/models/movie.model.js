@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs'
 import BaseSQLModel from '../utils/baseSqlModel.js';
 import db from '../utils/db.js'
 import movieSchema from '../sqlSchemas/movie.schema.js';
@@ -17,11 +16,11 @@ class MovieModel extends BaseSQLModel {
       }
     }
   
-    async create(data) {
+    async create(data, id) {
       try {
         const insertQuery = `INSERT INTO ?? (title, description, release_date, user_id, image_url, video_url) VALUES (?, ?, ?, ?, ?, ?)`;
         console.log(data)
-        const values = [data.title, data.description, data.release_date, data.user_id, data.image_url, data.video_url];
+        const values = [data.title, data.description, data.release_date, id, data.image_url, data.video_url];
         
         await db.query(insertQuery, [this.tableName, ...values]);
   
@@ -30,6 +29,17 @@ class MovieModel extends BaseSQLModel {
         return rows[0].id;
       } catch (error) {
         throw new Error(`Failed to create user: ${error.message}`);
+      }
+    }
+
+
+    async getUserMovies(id){
+      try{
+          const query = `SELECT * FROM ?? WHERE user_id = ?`;
+          const [rows] = await db.query(query, [this.tableName, id]);
+          return rows;
+      }catch(error){
+          throw new Error(`Failed to get user movies: ${error.message}`);
       }
     }
 

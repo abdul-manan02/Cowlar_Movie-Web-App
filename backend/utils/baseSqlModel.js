@@ -14,9 +14,21 @@ class BaseSQLModel {
     }
   }
 
-  async findAll() {
+  async findAll(sortBy) {
     try {
       const query = `SELECT * FROM ??`;
+      if(this.tableName === 'Movie'){
+        if(sortBy === 'latest'){
+          const Query = `${query} ORDER BY release_date DESC`;
+          const [rows] = await db.query(Query, [this.tableName]);
+          return rows;
+        }
+        else if(sortBy ==='rating'){
+          const Query = `${query} ORDER BY rating DESC`;
+          const [rows] = await db.query(Query, [this.tableName]);
+          return rows;
+        }
+      }
       const [rows] = await db.query(query, [this.tableName]);
       return rows;
     } catch (error) {
@@ -27,6 +39,7 @@ class BaseSQLModel {
   async findById(id) {
     try {
       const query = `SELECT * FROM ?? WHERE id = ?`;
+      console.log(this.tableName, id)
       const [rows] = await db.query(query, [this.tableName, id]);
       return rows[0];
     } catch (error) {

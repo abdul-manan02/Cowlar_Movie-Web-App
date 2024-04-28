@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs'
 import BaseSQLModel from '../utils/baseSqlModel.js';
 import db from '../utils/db.js'
 import reviewSchema from '../sqlSchemas/review.schema.js';
@@ -17,10 +16,10 @@ class ReviewModel extends BaseSQLModel {
       }
     }
   
-    async create(data) {
+    async create(data, id) {
       try {
         const insertQuery = `INSERT INTO ?? (movie_id, user_id, rating, review) VALUES (?, ?, ?, ?)`;
-        const values = [data.movie_id, data.user_id, data.rating, data.review];
+        const values = [data.movie_id, id, data.rating, data.review];
         
         await db.query(insertQuery, [this.tableName, ...values]);
   

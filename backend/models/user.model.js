@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 import BaseSQLModel from '../utils/baseSqlModel.js';
 import db from '../utils/db.js'
 import userSchema from '../sqlSchemas/user.schema.js';
@@ -32,7 +33,29 @@ class UserModel extends BaseSQLModel {
     }
   }
 
+  async login(data){
+    const username = data.username;
+    const password = data.password;
 
+    try{
+      const query = `SELECT * FROM ?? WHERE username = ?`;
+      const [rows] = await db.query(query, [this.tableName, username]);
+      if(rows.length === 0){
+        throw new Error('User not found');
+      }
+      const user = rows[0];
+      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if(isPasswordCorrect){
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_KEY, { expiresIn: '24h' });
+        return { user, token };
+      }
+      else
+        throw new Error('Invalid password');
+    }
+    catch(error){
+      throw new Error(`Failed to login: ${error.message}`);
+    }
+  }
 }
 
 export default UserModel;

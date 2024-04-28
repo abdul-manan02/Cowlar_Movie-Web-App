@@ -1,5 +1,6 @@
 import express from 'express';
 const router = express.Router();
+import authMiddleware from '../utils/authMiddleware.js'
 
 import{
     createReviewTable,
@@ -13,10 +14,10 @@ import{
 router.post('/createTable', createReviewTable);
 router.delete('/dropTable', dropReviewTable);
 
-router.route('/').get(getReviews).post(createReview);
+router.route('/').get(getReviews).post(authMiddleware, createReview);
 
 router.route('/reviewId/:id')
     .get(getReview)
-    .delete(deleteReview);
+    .delete(authMiddleware, deleteReview);
 
 export default router

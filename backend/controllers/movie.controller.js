@@ -20,17 +20,30 @@ const dropMovieTable = async (req, res) => {
 }
 
 const getMovies = async (req, res) => {
+    let sortBy
+    if(req.query.sortBy === "latest" || req.query.sortBy === "rating")
+        sortBy = req.query.sortBy
+
     try {
-        const movies = await movieModel.findAll();
+        const movies = await movieModel.findAll(sortBy);
         res.status(200).json(movies);
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
 };
-  
+
+const getMoviesForUser = async (req, res) => {
+    try {
+        const movies = await movieModel.getUserMovies(req.userId);
+        res.status(200).json(movies);
+    } catch (error) {
+        res.status(500).json({ error: error.toString() });
+    }
+}
+
 const createMovies = async (req, res) => {
     try {
-        const movieTitle = await movieModel.create(req.body);  
+        const movieTitle = await movieModel.create(req.body, req.userId);  
         res.status(200).json(movieTitle);
     } catch (error) {
         res.status(500).json({ error: error.toString() });
@@ -69,6 +82,7 @@ export{
     createMovieTable,
     dropMovieTable,
     getMovies,
+    getMoviesForUser,
     createMovies,
     getMovie,
     deleteMovie

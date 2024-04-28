@@ -46,10 +46,8 @@ const getReviews = async (req, res) => {
 
 const createReview = async (req, res) => {
     try {
-        const [review] = await Promise.all([
-            reviewModel.create(req.body),
-            movieModel.incrementRating(req.body.movie_id)
-        ]);
+        const review = await reviewModel.create(req.body, req.userId);
+        await movieModel.incrementRating(req.body.movie_id);
 
         res.status(200).json(review);
     } catch (error) {
@@ -62,10 +60,24 @@ const getReview = async (req, res) => {
     try {
         const review = await reviewModel.findById(id);
         
-        if (!review)
+        if (!review) {
             res.status(404).json({ error: 'Review not found' });
-        else 
-            res.status(200).json(review);
+            return;
+        }
+
+        const movie = await movieModel.findById(review.movie_id);
+        const user = await userModel.findById(review.user_id);
+
+        if (!movie || !user) {
+            res.status(404).json({ error: 'Associated movie or user not found' });
+            return;
+        }
+
+        res.status(200).json({
+            ...review,
+            movie,
+            user
+        });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
@@ -75,10 +87,8 @@ const deleteReview = async (req, res) => {
     const id = req.params.id;
     try {
         const review = await reviewModel.findById(id);
-        const [deletedRows] = await Promise.all([
-            reviewModel.delete(id),
-            movieModel.decrementRating(review.movie_id)
-        ]);
+        const deletedRows = await reviewModel.delete(id);
+        await movieModel.decrementRating(review.movie_id);
         
         if (deletedRows === 0)
             res.status(404).json({ error: 'Review not found' });
