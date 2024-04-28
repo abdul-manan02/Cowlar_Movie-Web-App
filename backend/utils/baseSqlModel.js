@@ -39,7 +39,6 @@ class BaseSQLModel {
   async findById(id) {
     try {
       const query = `SELECT * FROM ?? WHERE id = ?`;
-      console.log(this.tableName, id)
       const [rows] = await db.query(query, [this.tableName, id]);
       return rows[0];
     } catch (error) {
