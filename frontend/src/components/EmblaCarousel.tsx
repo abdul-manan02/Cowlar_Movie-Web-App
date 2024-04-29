@@ -5,7 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import imdb from '@/assets/imdb.png';
 import { useState } from 'react';
-import { MovieDetailDialog } from './movie-detail';
+import { MovieDetailDialog } from './Dialogs/movie-detail';
 
 type PropType = {
     slides: number[];
@@ -48,7 +48,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                                         // src="https://wallpaperset.com/w/full/3/d/1/366210.jpg"
                                         src="https://images.hdqwalls.com/download/john-wick-3-parabellum-poster-qf-2560x1440.jpg"
                                         alt="Movie image"
-                                        className="opacity-55"
+                                        className="cursor-pointer opacity-55 object-cover w-full h-full"
                                     />
                                     <div className="absolute flex-col right-16 w-1/3 text-start flex items-start justify-start ">
                                         <h1 className="text-white text-6xl font-bold">

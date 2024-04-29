@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import imdb from '@/assets/imdb.png';
-import { ScrollArea } from './ui/scroll-area';
-import { Ratings } from './rating';
+import { ScrollArea } from '../ui/scroll-area';
+import { Ratings } from '../rating';
 import man from '@/assets/man.png';
-import { Textarea } from './ui/textarea';
+import { Textarea } from '../ui/textarea';
 
 export function MovieDetailDialog({
     dialogOpen,
@@ -23,12 +23,13 @@ export function MovieDetailDialog({
 }) {
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogContent className="sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
+            <DialogContent className="h-[85vh] w-[70vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <ScrollArea className="max-h-[800px]">
                     <div className="flex flex-col">
                         <img
                             src="https://images.hdqwalls.com/download/john-wick-3-parabellum-poster-qf-2560x1440.jpg"
                             alt=""
+                            className='max-h-[75vh]'
                         />
                         <div className="px-5 pb-2 flex justify-between items-center">
                             <h1 className="text-3xl font-bold">
