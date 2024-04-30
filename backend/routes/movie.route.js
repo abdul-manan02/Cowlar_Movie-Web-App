@@ -19,7 +19,8 @@ router.route('/').post(authMiddleware, createMovies).get(getMovies);
 
 router.route('/movieId/:id')
     .get(getMovie)
-    .delete(authMiddleware, deleteMovie);
+    //.delete(authMiddleware, deleteMovie);
+    .delete( deleteMovie);
 
 router.route('/userMovies').get(authMiddleware, getMoviesForUser);
 

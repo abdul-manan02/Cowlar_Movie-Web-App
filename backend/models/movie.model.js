@@ -18,15 +18,14 @@ class MovieModel extends BaseSQLModel {
   
     async create(data, id) {
       try {
-        const insertQuery = `INSERT INTO ?? (title, description, release_date, user_id, image_url, video_url) VALUES (?, ?, ?, ?, ?, ?)`;
-        console.log(data)
-        const values = [data.title, data.description, data.release_date, id, data.image_url, data.video_url];
+        const insertQuery = `INSERT INTO ?? (title, description, release_year, user_id, image_url, video_url) VALUES (?, ?, ?, ?, ?, ?)`;
+        const values = [data.title, data.description, data.release_year, id, data.image_url, data.video_url];
         
         await db.query(insertQuery, [this.tableName, ...values]);
   
         const selectQuery = `SELECT * FROM ?? ORDER BY created_at DESC LIMIT 1`;
         const [rows] = await db.query(selectQuery, [this.tableName]);
-        return rows[0].id;
+        return rows[0];
       } catch (error) {
         throw new Error(`Failed to create user: ${error.message}`);
       }

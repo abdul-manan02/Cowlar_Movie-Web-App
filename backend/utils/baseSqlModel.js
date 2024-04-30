@@ -19,12 +19,12 @@ class BaseSQLModel {
       const query = `SELECT * FROM ??`;
       if(this.tableName === 'Movie'){
         if(sortBy === 'latest'){
-          const Query = `${query} ORDER BY release_date DESC`;
+          const Query = `${query} ORDER BY release_year DESC`;
           const [rows] = await db.query(Query, [this.tableName]);
           return rows;
         }
         else if(sortBy ==='rating'){
-          const Query = `${query} ORDER BY rating DESC`;
+          const Query = `${query} ORDER BY rating DESC LIMIT 5`;
           const [rows] = await db.query(Query, [this.tableName]);
           return rows;
         }

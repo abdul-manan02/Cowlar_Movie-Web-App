@@ -23,6 +23,29 @@ const dropReviewTable = async (req, res) => {
     }
 }
 
+const getReviewsForUser = async (req, res) => {
+    const userId = req.userId;
+    try {
+        const reviews = await reviewModel.getUserReviews(userId);
+        if(reviews.length === 0){
+            res.status(404).json({ error: 'No reviews found' });
+            return;
+        }
+        const reviewsWithMovie = await Promise.all(reviews.map(async (review) => {
+            const movie = await movieModel.findById(review.movie_id);
+            return {
+                ...review,
+                movie
+            };
+        }
+        ));
+        res.status(200).json(reviewsWithMovie);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.toString() });
+    }
+}
+
 const getReviews = async (req, res) => {
     try {
         const reviews = await reviewModel.findAll();
@@ -55,6 +78,29 @@ const createReview = async (req, res) => {
     }
 };
 
+const getMovieReviews = async (req, res) => {
+    const movieId = req.params.id;
+    try {
+        const reviews = await reviewModel.findByMovieId(movieId);
+        if(reviews.length === 0){
+            res.status(404).json({ error: 'No reviews found' });
+            return;
+        }
+        const reviewsWithUser = await Promise.all(reviews.map(async (review) => {
+            const user = await userModel.findById(review.user_id);
+            return {
+                ...review,
+                user
+            };
+        }
+        ));
+        res.status(200).json(reviewsWithUser);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.toString() });
+    }
+}
+        
 const getReview = async (req, res) => {
     const id = req.params.id;
     try {
@@ -105,5 +151,7 @@ export{
     getReviews,
     createReview,
     getReview,
-    deleteReview
+    deleteReview,
+    getMovieReviews,
+    getReviewsForUser
 }

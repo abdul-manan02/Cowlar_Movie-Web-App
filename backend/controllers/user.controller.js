@@ -38,11 +38,12 @@ const createUser = async (req, res) => {
 };
   
 const login = async(req,res)=>{
-    if (!req.body.username || !req.body.password ) {
+    if (!req.body.email || !req.body.password ) {
         return res.status(400).json({ error: 'Bad request. Please provide username and password' });
     }
     try{
         const user = await userModel.login(req.body);
+        
         if(user){
             res.status(200).json(user);
         }else{
@@ -54,7 +55,6 @@ const login = async(req,res)=>{
 }
 
 const getUser = async (req, res) => {
-    console.log(req.userId)
     const userId = req.params.id;
     try {
         const user = await userModel.findById(userId);

@@ -2,21 +2,32 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import logo from '@/assets/logo.png';
-import man from '@/assets/man.png'
 import { SignIn } from './Dialogs/SignIn';
 import { SignUp } from './Dialogs/SignUp';
 import { AddMovie } from './Dialogs/AddMovie';
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+import { useAuth } from '@/components/AuthContext';
 
-export default function Header() {
+interface MovieState {
+    movies: any[];
+    setMovies: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+interface HeaderProps {
+    movieState: MovieState;
+}
+
+const Header: React.FC<HeaderProps> = ({ movieState }) => {
     const [signInDialogOpen, setSignInDialogOpen] = useState<boolean>(false);
     const [signUpDialogOpen, setSignUpDialogOpen] = useState<boolean>(false);
     const [addMovieDialogOpen, setAddMovieDialogOpen] =
         useState<boolean>(false);
 
+    const { isLoggedIn, setIsLoggedIn } = useAuth();
+    const [ searchMovie, setSearchMovie ] = useState<string>('');
+
     return (
         <>
-            <div>
+            <div className=''>
                 <SignIn
                     setSignInDialogOpen={setSignInDialogOpen}
                     signInDialogOpen={signInDialogOpen}
@@ -28,13 +39,18 @@ export default function Header() {
                 <AddMovie
                     setAddMovieDialogOpen={setAddMovieDialogOpen}
                     addMovieDialogOpen={addMovieDialogOpen}
+                    movieState={movieState}
                 />
             </div>
 
             <div className="">
                 <div className="w-screen flex justify-between items-center p-6">
                     <div className="flex items-center gap-4">
-                        <img src={logo} alt="Main logo" />
+                        <img
+                            src={logo}
+                            alt="Main logo"
+                            className="cursor-pointer"
+                        />
                         <h1 className="hidden lg:block text-xl font-semibold">
                             Movie Mania
                         </h1>
@@ -43,58 +59,51 @@ export default function Header() {
                         <Input
                             type="email"
                             placeholder="What do you want to watch?"
+                            value={searchMovie}
+                            onChange={(e) => setSearchMovie(e.target.value)}
                         />
                         <Button type="submit">Search</Button>
                     </div>
-                    {/* <div className="flex items-center gap-2">
-                        <Button
-                            className="bg-transparent hover:bg-transparent"
-                            onClick={() => {
-                                setSignInDialogOpen(true);
-                            }}
-                        >
-                            Log in
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setSignUpDialogOpen(true);
-                            }}
-                        >
-                            Sign up
-                        </Button>
-                    </div> */}
-                    <div className="flex items-center gap-2">
-                        <img
-                            src={man}
-                            alt="User"
-                            className="w-8 h-8 rounded-full"
-                        />
-                        <div className="relative">
-                            {/* <summary className="cursor-pointer">▼</summary> */}
-                            <ul className="absolute left-0 mt-2 p-2 bg-white rounded shadow-md">
-                                <li>
-                                    <Button
-                                        className=""
-                                        onClick={() => {
-                                            setAddMovieDialogOpen(true);
-                                        }}
-                                    >
-                                        Add Movie
-                                    </Button>
-                                </li>
-                                <li>
-                                    <Button
-                                        className=""
-                                        onClick={() => {
-                                            // Handle log out here
-                                        }}
-                                    >
-                                        Log Out
-                                    </Button>
-                                </li>
-                            </ul>
+                    {!isLoggedIn ? (
+                        <div className="flex items-center gap-2">
+                            <Button
+                                onClick={() => {
+                                    setSignInDialogOpen(true);
+                                }}
+                            >
+                                Sign in
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    setSignUpDialogOpen(true);
+                                }}
+                                className="bg-transparent hover:bg-transparent"
+                                >
+                                Sign up
+                            </Button>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <Button
+                                className=""
+                                onClick={() => {
+                                    setAddMovieDialogOpen(true);
+                                }}
+                            >
+                                Add Movie
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    localStorage.removeItem('token');
+                                    setIsLoggedIn(false);
+                                    alert('Logged out successfully');
+                                }}
+                                className="bg-transparent hover:bg-transparent"
+                            >
+                                Logout
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <div className="flex justify-center">
                     <div className="flex md:hidden w-full max-w-sm items-center space-x-4">
@@ -108,4 +117,6 @@ export default function Header() {
             </div>
         </>
     );
-}
+};
+
+export default Header;

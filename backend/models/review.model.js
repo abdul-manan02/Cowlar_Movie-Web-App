@@ -31,6 +31,25 @@ class ReviewModel extends BaseSQLModel {
       }
     }
   
+    async getUserReviews (userId) {
+      try {
+        const query = `SELECT * FROM ?? WHERE user_id = ?`;
+        const [rows] = await db.query(query, [this.tableName, userId]);
+        return rows;
+      } catch (error) {
+        throw new Error(`Failed to find reviews: ${error.message}`);
+      }
+    }
+
+    async findByMovieId(movieId) {
+      try {
+        const query = `SELECT * FROM ?? WHERE movie_id = ?`;
+        const [rows] = await db.query(query, [this.tableName, movieId]);
+        return rows;
+      } catch (error) {
+        throw new Error(`Failed to find reviews: ${error.message}`);
+      }
+    }
 }
   
 export default ReviewModel;

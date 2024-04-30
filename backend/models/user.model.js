@@ -19,9 +19,9 @@ class UserModel extends BaseSQLModel {
 
   async create(data) {
     try {
-      const insertQuery = `INSERT INTO ?? (name, email, username, password, image_url) VALUES (?, ?, ?, ?, ?)`;
+      const insertQuery = `INSERT INTO ?? (name, email, username, password) VALUES (?, ?, ?, ?)`;
       const hashedPassword = await bcrypt.hash(data.password, 12);
-      const values = [data.name, data.email, data.username, hashedPassword, data.image_url];
+      const values = [data.name, data.email, data.username, hashedPassword];
       
       await db.query(insertQuery, [this.tableName, ...values]);
 
@@ -34,12 +34,12 @@ class UserModel extends BaseSQLModel {
   }
 
   async login(data){
-    const username = data.username;
+    const email = data.email;
     const password = data.password;
 
     try{
-      const query = `SELECT * FROM ?? WHERE username = ?`;
-      const [rows] = await db.query(query, [this.tableName, username]);
+      const query = `SELECT * FROM ?? WHERE email = ?`;
+      const [rows] = await db.query(query, [this.tableName, email]);
       if(rows.length === 0){
         throw new Error('User not found');
       }

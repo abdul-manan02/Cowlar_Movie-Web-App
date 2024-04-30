@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { MovieDetailDialog } from './Dialogs/movie-detail';
 
 type PropType = {
-    slides: number[];
+    slides: any[];
     options?: EmblaOptionsType;
 };
 
@@ -24,58 +24,57 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         useDotButton(emblaApi);
 
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const [selectedMovie, setSelectedMovie] = useState<any>();
 
     return (
         <>
             <MovieDetailDialog
                 setDialogOpen={setDialogOpen}
                 dialogOpen={dialogOpen}
+                movie={selectedMovie}
             />
 
             <section className="embla" dir="rtl">
-                <div
-                    className="embla__viewport"
-                    ref={emblaRef}
-                    onClick={() => {
-                        setDialogOpen(true);
-                    }}
-                >
+                <div className="embla__viewport" ref={emblaRef}>
                     <div className="embla__container">
-                        {slides.map((index) => (
-                            <div className="embla__slide" key={index}>
-                                <div className="embla__slide__number">
-                                    <img
-                                        // src="https://wallpaperset.com/w/full/3/d/1/366210.jpg"
-                                        src="https://images.hdqwalls.com/download/john-wick-3-parabellum-poster-qf-2560x1440.jpg"
-                                        alt="Movie image"
-                                        className="cursor-pointer opacity-55 object-cover w-full h-full"
-                                    />
-                                    <div className="absolute flex-col right-16 w-1/3 text-start flex items-start justify-start ">
-                                        <h1 className="text-white text-6xl font-bold">
-                                            John Wick 3: Parabellum
-                                        </h1>
-                                        <div className="flex items-center flex-row-reverse gap-2">
-                                            <img
-                                                src={imdb}
-                                                alt="imdb logo"
-                                                className="w-16"
-                                            />
-                                            <p className="text-xl font-semibold">
-                                                10.2
-                                            </p>
-                                        </div>
-                                        <p className="text-xl">
-                                            John Wick is on the run after
-                                            killing a member of the
-                                            international assassins' guild, and
-                                            with a $14 million price tag on his
-                                            head, he is the target of hit men
-                                            and women everywhere.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                        {slides.length > 0
+                            ? slides.map((movie, index) => (
+                                  <div
+                                      className="embla__slide"
+                                      key={index}
+                                      onClick={() => {
+                                          setSelectedMovie(movie);
+                                          setDialogOpen(true);
+                                      }}
+                                  >
+                                      <div className="embla__slide__number">
+                                          <img
+                                              src={movie.image_url}
+                                              alt="Movie image"
+                                              className="cursor-pointer opacity-55 object-cover w-full h-full"
+                                          />
+                                          <div className="absolute flex-col right-16 w-1/3 text-start flex items-start justify-start ">
+                                              <h1 className="text-white text-6xl font-bold">
+                                                  {movie.title}
+                                              </h1>
+                                              <div className="flex items-center flex-row-reverse gap-2">
+                                                  <img
+                                                      src={imdb}
+                                                      alt="imdb logo"
+                                                      className="w-16"
+                                                  />
+                                                  <p className="text-xl font-semibold">
+                                                      {movie.rating}
+                                                  </p>
+                                              </div>
+                                              <p className="text-xl">
+                                                  {movie.description}
+                                              </p>
+                                          </div>
+                                      </div>
+                                  </div>
+                              ))
+                            : null}
                     </div>
                 </div>
 

@@ -5,164 +5,242 @@ import { ScrollArea } from '../ui/scroll-area';
 import { Ratings } from '../rating';
 import man from '@/assets/man.png';
 import { Textarea } from '../ui/textarea';
+import { useAuth } from '../AuthContext';
+import { useEffect, useState } from 'react';
 
 export function MovieDetailDialog({
     dialogOpen,
-    setDialogOpen
-    // data
+    setDialogOpen,
+    movie
 }: {
     dialogOpen: boolean;
     setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    // data: {
-    //     image: string;
-    //     title: string;
-    //     releaseDate: string;
-    //     description: string;
-    //     reviews: any;
-    // };
+    movie: any;
 }) {
+    const [reviews, setReviews] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (dialogOpen) {
+            setShowVideo(false);
+        }
+    }, [dialogOpen]);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            if (movie) {
+                console.log(movie);
+                const url = `http://localhost:3000/api/v1/reviews/movieId/${movie.id}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization:
+                            'Bearer ' + `${localStorage.getItem('token')}`
+                    },
+                    method: 'GET'
+                });
+                const result = await response.json();
+                if (result.length > 0) {
+                    setReviews(result);
+                } else {
+                    setReviews([]);
+                }
+            }
+        };
+
+        fetchReviews();
+    }, [movie]);
+
+    const { isLoggedIn } = useAuth();
+    const [reviewAdded, setReviewAdded] = useState(false);
+    const [newReview, setNewReview] = useState('');
+    const [showVideo, setShowVideo] = useState(false);
+
+    const checkReviewEditPermission = async (userId: number) => {
+        const url: string = `http://localhost:3000/api/v1/users/userId/${userId}`;
+        const response = await fetch(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization:
+                    'Bearer ' + `${localStorage.getItem('token')}`
+            },
+            method: 'GET'
+        });
+        console.log(await response.json())
+    }
+
+    const addReview = async () => {
+        try {
+            const url = 'http://localhost:3000/api/v1/reviews';
+            const data = {
+                movie_id: movie.id,
+                rating: 3,
+                review: newReview
+            };
+            const response = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:
+                        'Bearer ' + `${localStorage.getItem('token')}`
+                },
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            if (response.status === 200) {
+                setReviewAdded(true);
+                alert(
+                    'Review has been added, you can reload the page to view it'
+                );
+            } else {
+                throw new Error('Failed to add review');
+            }
+        } catch (error: any) {
+            alert('Error: ' + error.message);
+        }
+    };
+
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent className="h-[85vh] w-[70vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <ScrollArea className="max-h-[800px]">
                     <div className="flex flex-col">
-                        <img
-                            src="https://images.hdqwalls.com/download/john-wick-3-parabellum-poster-qf-2560x1440.jpg"
-                            alt=""
-                            className='max-h-[75vh]'
-                        />
-                        <div className="px-5 pb-2 flex justify-between items-center">
-                            <h1 className="text-3xl font-bold">
-                                John Wick 3: Parabellum
-                            </h1>
-                            <div className="flex items-center gap-2">
+                        {movie && (
+                            <>
                                 <img
-                                    src={imdb}
-                                    alt="imdb logo"
-                                    className="w-16"
+                                    src={movie.image_url}
+                                    alt=""
+                                    className="max-h-[75vh]"
                                 />
-                                <p className="text-xl font-semibold text-white">
-                                    10.2
+                                <div className="px-5 pb-2 flex justify-between items-center">
+                                    <h1 className="text-3xl font-bold">
+                                        {movie.title}
+                                    </h1>
+                                    {/* {showVideo ? (
+                                        <div>
+                                            <iframe
+                                                width="560"
+                                                height="315"
+                                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                                title="YouTube video player"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                                className="top-0 left-0 w-[70vw] h-[70vh] z-1"
+                                            >
+                                                <Button
+                                                    className="bg-transparent"
+                                                    onClick={() =>
+                                                        setShowVideo(false)
+                                                    }
+                                                >
+                                                    Close Ad
+                                                </Button>
+                                            </iframe>
+                                        </div>
+                                    ) : (
+                                        <Button
+                                            className="bg-white text-black"
+                                            onClick={() => setShowVideo(true)}
+                                        >
+                                            Watch Trailer
+                                        </Button>
+                                    )} */}
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src={imdb}
+                                            alt="imdb logo"
+                                            className="w-16"
+                                        />
+                                        <p className="text-xl font-semibold text-white">
+                                            {movie.rating}
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="px-5 pb-8 text-lg">
+                                    {movie.description}
                                 </p>
-                            </div>
-                        </div>
-                        <p className="px-5 pb-8 text-lg">
-                            John Wick is on the run after killing a member of
-                            the international assassins' guild, and with a $14
-                            million price tag on his head, he is the target of
-                            hit men and women everywhere. John Wick is on the
-                            run after killing a member of the international
-                            assassins' guild, and with a $14 million price tag
-                            on his head, he is the target of hit men and women
-                            everywhere.
-                        </p>
 
-                        <p className="text-xl px-5 font-semibold">Reviews</p>
-                        <div className="px-5 mt-2">
-                            <Textarea placeholder="What do you think about the movie?" />
-                            <div className="flex justify-end items-end">
-                                <Button className="mt-4">Add Review</Button>
-                            </div>
-                        </div>
-                        <div className="px-5 pb-10">
-                            <blockquote className="mt-4">
-                                <div
-                                    aria-hidden="true"
-                                    className="user-select-none -z-1 pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
-                                ></div>
-
-                                <div className="relative z-20 mt-6 flex flex-row items-center">
-                                    <span className="flex items-center gap-4">
-                                        <img
-                                            src={man}
-                                            alt="Profile image"
-                                            height={40}
-                                            width={40}
+                                <p className="text-xl px-5 font-semibold">
+                                    Reviews
+                                </p>
+                                {isLoggedIn && !reviewAdded && (
+                                    <div className="px-5 mt-2">
+                                        <Textarea
+                                            placeholder="What do you think about the movie?"
+                                            value={newReview}
+                                            onChange={(e) =>
+                                                setNewReview(e.target.value)
+                                            }
                                         />
-                                        <div className="flex flex-col ">
-                                            <span className=" text-sm leading-[1.6] text-white font-normal">
-                                                Bilal Khan
-                                            </span>
-                                            <Ratings rating={3} size={15} />
+                                        <div className="flex justify-end items-end">
+                                            <Button
+                                                className="mt-4"
+                                                onClick={addReview}
+                                            >
+                                                Add Review
+                                            </Button>
                                         </div>
-                                    </span>
-                                </div>
+                                    </div>
+                                )}
+                                <div className="px-5 pb-10">
+                                    {reviews.map((review, index) => (
+                                        <blockquote
+                                            className="mt-4"
+                                            key={index}
+                                        >
+                                            <div
+                                                aria-hidden="true"
+                                                className="user-select-none -z-1 pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
+                                            ></div>
 
-                                <div className="mt-2 relative z-20 text-base ml-14 leading-[1.6] text-white/70 font-normal">
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Similique modi amet,
-                                    magnam, suscipit ex eos eaque, animi laborum
-                                    magni nihil placeat molestiae sequi officiis
-                                    eligendi nobis accusantium voluptas corporis
-                                    consequatur.
-                                </div>
-                            </blockquote>
+                                            <div className="relative z-20 mt-6 flex flex-row items-center">
+                                                <span className="flex items-center gap-4">
+                                                    <img
+                                                        src={man}
+                                                        alt="Profile image"
+                                                        height={40}
+                                                        width={40}
+                                                    />
+                                                    <div className="flex flex-col ">
+                                                        <span className=" text-sm leading-[1.6] text-white font-normal">
+                                                            {
+                                                                review.user
+                                                                    .username
+                                                            }
+                                                        </span>
+                                                        <Ratings
+                                                            rating={
+                                                                review.rating
+                                                            }
+                                                            size={15}
+                                                        />
+                                                    </div>
+                                                </span>
+                                                {/* {(checkUser(review.user.id)) && (
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    className="h-6 w-6 ml-auto cursor-pointer"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                    />
+                                                </svg>
+                                                )} */}
+                                            </div>
 
-                            <blockquote className="mt-4">
-                                <div
-                                    aria-hidden="true"
-                                    className="user-select-none -z-1 pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
-                                ></div>
-
-                                <div className="relative z-20 mt-6 flex flex-row items-center">
-                                    <span className="flex items-center gap-4">
-                                        <img
-                                            src={man}
-                                            alt="Profile image"
-                                            height={40}
-                                            width={40}
-                                        />
-                                        <div className="flex flex-col ">
-                                            <span className=" text-sm leading-[1.6] text-white font-normal">
-                                                Bilal Khan
-                                            </span>
-                                            <Ratings rating={3} size={15} />
-                                        </div>
-                                    </span>
+                                            <div className="mt-2 relative z-20 text-base ml-14 leading-[1.6] text-white/70 font-normal">
+                                                {review.review}
+                                            </div>
+                                        </blockquote>
+                                    ))}
                                 </div>
-
-                                <div className="mt-2 relative z-20 text-base ml-14 leading-[1.6] text-white/70 font-normal">
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Similique modi amet,
-                                    magnam, suscipit ex eos eaque, animi laborum
-                                    magni nihil placeat molestiae sequi officiis
-                                    eligendi nobis accusantium voluptas corporis
-                                    consequatur.
-                                </div>
-                            </blockquote>
-                            <blockquote className="mt-4">
-                                <div
-                                    aria-hidden="true"
-                                    className="user-select-none -z-1 pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
-                                ></div>
-
-                                <div className="relative z-20 mt-6 flex flex-row items-center">
-                                    <span className="flex items-center gap-4">
-                                        <img
-                                            src={man}
-                                            alt="Profile image"
-                                            height={40}
-                                            width={40}
-                                        />
-                                        <div className="flex flex-col ">
-                                            <span className=" text-sm leading-[1.6] text-white font-normal">
-                                                Bilal Khan
-                                            </span>
-                                            <Ratings rating={3} size={15} />
-                                        </div>
-                                    </span>
-                                </div>
-
-                                <div className="mt-2 relative z-20 text-base ml-14 leading-[1.6] text-white/70 font-normal">
-                                    Lorem ipsum dolor sit amet, consectetur
-                                    adipisicing elit. Similique modi amet,
-                                    magnam, suscipit ex eos eaque, animi laborum
-                                    magni nihil placeat molestiae sequi officiis
-                                    eligendi nobis accusantium voluptas corporis
-                                    consequatur.
-                                </div>
-                            </blockquote>
-                        </div>
+                            </>
+                        )}
                     </div>
                 </ScrollArea>
             </DialogContent>
