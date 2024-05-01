@@ -2,10 +2,6 @@
 
 This Fully Responsive Movie Web App is built with React and TypeScript frontend and Node.js for the backend. It allows users to sign up, log in, view movies, search for movies, add reviews, and manage movies. The app also utilizes database tables for movies, users, and reviews, with functionalities such as creating, updating, and deleting records.
 
-## Live Demo
-
-[Live Demo Link](#) - *Add live demo link here*
-
 ## Features
 
 - User authentication: Users can sign up and log in to the app.
