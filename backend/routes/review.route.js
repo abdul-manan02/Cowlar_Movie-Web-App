@@ -10,7 +10,8 @@ import{
     getReview,
     deleteReview,
     getMovieReviews,
-    getReviewsForUser
+    getReviewsForUser,
+    updateReview
 } from '../controllers/review.controller.js';
 
 router.post('/createTable', createReviewTable);
@@ -23,6 +24,7 @@ router.route('/userReviews').get(authMiddleware, getReviewsForUser);
 
 router.route('/reviewId/:id')
     .get(getReview)
+    .put(authMiddleware, updateReview)
     .delete(authMiddleware, deleteReview);
 
 export default router

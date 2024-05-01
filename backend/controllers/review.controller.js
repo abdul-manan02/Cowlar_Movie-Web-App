@@ -39,6 +39,7 @@ const getReviewsForUser = async (req, res) => {
             };
         }
         ));
+        console.log(reviewsWithMovie)
         res.status(200).json(reviewsWithMovie);
     }
     catch (error) {
@@ -129,6 +130,21 @@ const getReview = async (req, res) => {
     }
 }
 
+const updateReview = async (req, res) => {
+    const id = req.params.id;
+    const description = req.body.description;
+    try {
+        const review = await reviewModel.updateReview(description, id);
+        if (!review) {
+            res.status(404).json({ error: 'Review not found' });
+            return;
+        }
+        res.status(200).json({msg : `Updated successfully`});
+    } catch (error) {
+        res.status(500).json({ error: error.toString() });
+    }
+}
+
 const deleteReview = async (req, res) => {
     const id = req.params.id;
     try {
@@ -153,5 +169,6 @@ export{
     getReview,
     deleteReview,
     getMovieReviews,
-    getReviewsForUser
+    getReviewsForUser,
+    updateReview
 }

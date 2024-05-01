@@ -1,12 +1,16 @@
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './components/AuthContext';
-import HomePage from '@/components/HomePage';
+import Routes from './Routes';
 
-function App() {
+const App = () => {
+
     return (
-        <AuthProvider>
-            <HomePage />
-        </AuthProvider>
+        <Router>
+            <AuthProvider>
+                <Routes/>
+            </AuthProvider>
+        </Router>
     );
-}
+};
 
 export default App;

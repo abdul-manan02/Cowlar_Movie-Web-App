@@ -23,7 +23,7 @@ export function AddMovie({
     const [releaseYear, setReleaseYear] = useState<string | ''>('');
     const [imageUrl, setImageUrl] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
-
+    
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
@@ -72,34 +72,34 @@ export function AddMovie({
                             <input
                                 type="text"
                                 placeholder="Title"
-                                className="w-[30vw] p-2 rounded-md text-black"
+                                className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
                             <textarea
                                 placeholder="Description"
-                                className="w-[30vw] p-2 rounded-md text-black"
+                                className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                             <input
                                 type="text"
                                 placeholder="Release Year"
-                                className="w-[30vw] p-2 rounded-md text-black"
+                                className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={releaseYear}
                                 onChange={(e) => setReleaseYear(e.target.value)}
                             />
                             <input
                                 type="text"
                                 placeholder="Image URL"
-                                className="w-[30vw] p-2 rounded-md text-black"
+                                className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={imageUrl}
                                 onChange={(e) => setImageUrl(e.target.value)}
                             />
                             <input
                                 type="text"
                                 placeholder="Video URL"
-                                className="w-[30vw] p-2 rounded-md text-black"
+                                className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={videoUrl}
                                 onChange={(e) => setVideoUrl(e.target.value)}
                             />

@@ -50,14 +50,14 @@ export function SignIn({
                             <input
                                 type="email"
                                 placeholder="Email"
-                                className="w-[20vw] p-2 rounded-md text-black"
+                                className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                             <input
                                 type="password"
                                 placeholder="Password"
-                                className="w-[20vw] p-2 rounded-md text-black"
+                                className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

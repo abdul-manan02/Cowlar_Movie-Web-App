@@ -59,6 +59,16 @@ class MovieModel extends BaseSQLModel {
         throw new Error(`Failed to decrement rating: ${error.message}`);
       }
     }
+
+    async search(searchText){
+      try{
+          const query = `SELECT * FROM ?? WHERE title LIKE ?`;
+          const [rows] = await db.query(query, [this.tableName, `%${searchText}%`]);
+          return rows;
+      }catch(error){
+          throw new Error(`Failed to search movies: ${error.message}`);
+      }
+    }
 }
   
 export default MovieModel;

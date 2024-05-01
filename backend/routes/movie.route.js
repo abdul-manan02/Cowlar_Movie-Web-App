@@ -9,7 +9,8 @@ import{
     getMoviesForUser,
     createMovies,
     getMovie,
-    deleteMovie
+    deleteMovie,
+    searchMovie
 } from '../controllers/movie.controller.js';
 
 router.post('/createTable', createMovieTable);
@@ -22,6 +23,7 @@ router.route('/movieId/:id')
     //.delete(authMiddleware, deleteMovie);
     .delete( deleteMovie);
 
+    router.route('/search').get(searchMovie);
 router.route('/userMovies').get(authMiddleware, getMoviesForUser);
 
 export default router

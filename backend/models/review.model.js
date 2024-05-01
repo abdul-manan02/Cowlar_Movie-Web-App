@@ -50,6 +50,16 @@ class ReviewModel extends BaseSQLModel {
         throw new Error(`Failed to find reviews: ${error.message}`);
       }
     }
+
+    async updateReview (description, id){
+      try {
+        const query = `UPDATE ?? SET review = ? WHERE id = ?`;
+        await db.query(query, [this.tableName, description, id]);
+        return true;
+      } catch (error) {
+        throw new Error(`Failed to update review: ${error.message}`);
+      }
+    }
 }
   
 export default ReviewModel;

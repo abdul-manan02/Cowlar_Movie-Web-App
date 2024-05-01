@@ -78,6 +78,19 @@ const deleteMovie = async (req, res) => {
     }
 }
 
+const searchMovie = async (req, res) => {
+    const title = req.query.title;
+    try {
+        const movies = await movieModel.search(title);
+        if(movies.length === 0)
+            res.status(404).json({ error: 'Movie not found' });
+        else
+            res.status(200).json(movies);
+    } catch (error) {
+        res.status(500).json({ error: error.toString() });
+    }
+}
+
 export{
     createMovieTable,
     dropMovieTable,
@@ -85,5 +98,6 @@ export{
     getMoviesForUser,
     createMovies,
     getMovie,
-    deleteMovie
+    deleteMovie,
+    searchMovie
 }

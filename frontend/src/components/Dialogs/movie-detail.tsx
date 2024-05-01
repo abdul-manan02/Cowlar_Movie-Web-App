@@ -18,6 +18,10 @@ export function MovieDetailDialog({
     movie: any;
 }) {
     const [reviews, setReviews] = useState<any[]>([]);
+    const { isLoggedIn } = useAuth();
+    const [reviewAdded, setReviewAdded] = useState(false);
+    const [newReview, setNewReview] = useState('');
+    const [showVideo, setShowVideo] = useState(false);
 
     useEffect(() => {
         if (dialogOpen) {
@@ -27,46 +31,27 @@ export function MovieDetailDialog({
 
     useEffect(() => {
         const fetchReviews = async () => {
-            if (movie) {
-                console.log(movie);
-                const url = `http://localhost:3000/api/v1/reviews/movieId/${movie.id}`;
-                const response = await fetch(url, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization:
-                            'Bearer ' + `${localStorage.getItem('token')}`
-                    },
-                    method: 'GET'
-                });
-                const result = await response.json();
-                if (result.length > 0) {
-                    setReviews(result);
-                } else {
-                    setReviews([]);
-                }
+            const url = `http://localhost:3000/api/v1/reviews/movieId/${movie.id}`;
+            const response = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:
+                        'Bearer ' + `${localStorage.getItem('token')}`
+                },
+                method: 'GET'
+            });
+            const result = await response.json();
+            if (result.length > 0) {
+                setReviews(result);
+            } else {
+                setReviews([]);
             }
         };
 
-        fetchReviews();
+        if (movie) {
+            fetchReviews();
+        }
     }, [movie]);
-
-    const { isLoggedIn } = useAuth();
-    const [reviewAdded, setReviewAdded] = useState(false);
-    const [newReview, setNewReview] = useState('');
-    const [showVideo, setShowVideo] = useState(false);
-
-    const checkReviewEditPermission = async (userId: number) => {
-        const url: string = `http://localhost:3000/api/v1/users/userId/${userId}`;
-        const response = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization:
-                    'Bearer ' + `${localStorage.getItem('token')}`
-            },
-            method: 'GET'
-        });
-        console.log(await response.json())
-    }
 
     const addReview = async () => {
         try {
@@ -105,45 +90,44 @@ export function MovieDetailDialog({
                     <div className="flex flex-col">
                         {movie && (
                             <>
-                                <img
-                                    src={movie.image_url}
-                                    alt=""
-                                    className="max-h-[75vh]"
-                                />
-                                <div className="px-5 pb-2 flex justify-between items-center">
-                                    <h1 className="text-3xl font-bold">
-                                        {movie.title}
-                                    </h1>
-                                    {/* {showVideo ? (
-                                        <div>
+                                <div className="relative w-full h-auto">
+                                    <img
+                                        src={movie.image_url}
+                                        alt=""
+                                        className="w-full h-full object-cover"
+                                    />
+                                    {showVideo ? (
+                                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-[300px] sm:h-[450px] md:h-[600px] lg:h-[450px] xl:h-[600px] aspect-w-16 aspect-h-9">
                                             <iframe
-                                                width="560"
-                                                height="315"
-                                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                                className="absolute top-30 left-0 w-full h-full"
+                                                src={`https://www.youtube.com/embed/${movie.video_id}`}
                                                 title="YouTube video player"
                                                 frameBorder="0"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
-                                                className="top-0 left-0 w-[70vw] h-[70vh] z-1"
+                                            />
+                                            <Button
+                                                className="bg-white text-black mt-2 block mx-auto absolute bottom-20 right-3"
+                                                onClick={() =>
+                                                    setShowVideo(false)
+                                                }
                                             >
-                                                <Button
-                                                    className="bg-transparent"
-                                                    onClick={() =>
-                                                        setShowVideo(false)
-                                                    }
-                                                >
-                                                    Close Ad
-                                                </Button>
-                                            </iframe>
+                                                Close Ad
+                                            </Button>
                                         </div>
                                     ) : (
                                         <Button
-                                            className="bg-white text-black"
+                                            className="absolute bottom-4 right-3 bg-white text-black"
                                             onClick={() => setShowVideo(true)}
                                         >
                                             Watch Trailer
                                         </Button>
-                                    )} */}
+                                    )}
+                                </div>
+                                <div className="px-5 pb-2 flex justify-between items-center">
+                                    <h1 className="text-3xl font-bold">
+                                        {movie.title}
+                                    </h1>
                                     <div className="flex items-center gap-2">
                                         <img
                                             src={imdb}

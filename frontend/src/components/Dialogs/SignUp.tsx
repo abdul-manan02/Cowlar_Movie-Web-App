@@ -44,28 +44,28 @@ export function SignUp({
                             <input
                                 type="text"
                                 placeholder="Name"
-                                className="w-[20vw] p-2 rounded-md text-black"
+                                className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
                             <input
                                 type="text"
                                 placeholder="Username"
-                                className="w-[20vw] p-2 rounded-md text-black"
+                                className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                             <input
                                 type="email"
                                 placeholder="Email"
-                                className="w-[20vw] p-2 rounded-md text-black"
+                                className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                             <input
                                 type="password"
                                 placeholder="Password"
-                                className="w-[20vw] p-2 rounded-md text-black"
+                                className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

@@ -6,6 +6,7 @@ import { SignIn } from './Dialogs/SignIn';
 import { SignUp } from './Dialogs/SignUp';
 import { AddMovie } from './Dialogs/AddMovie';
 import { useAuth } from '@/components/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface MovieState {
     movies: any[];
@@ -17,17 +18,18 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ movieState }) => {
+    const navigate = useNavigate();
     const [signInDialogOpen, setSignInDialogOpen] = useState<boolean>(false);
     const [signUpDialogOpen, setSignUpDialogOpen] = useState<boolean>(false);
     const [addMovieDialogOpen, setAddMovieDialogOpen] =
         useState<boolean>(false);
 
     const { isLoggedIn, setIsLoggedIn } = useAuth();
-    const [ searchMovie, setSearchMovie ] = useState<string>('');
+    const [searchMovie, setSearchMovie] = useState<string>('');
 
     return (
         <>
-            <div className=''>
+            <div className="">
                 <SignIn
                     setSignInDialogOpen={setSignInDialogOpen}
                     signInDialogOpen={signInDialogOpen}
@@ -50,6 +52,9 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                             src={logo}
                             alt="Main logo"
                             className="cursor-pointer"
+                            onClick={() => {
+                                navigate('/');
+                            }}
                         />
                         <h1 className="hidden lg:block text-xl font-semibold">
                             Movie Mania
@@ -62,11 +67,21 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                             value={searchMovie}
                             onChange={(e) => setSearchMovie(e.target.value)}
                         />
-                        <Button type="submit">Search</Button>
+                        <Button
+                            type="submit"
+                            onClick={() => {
+                                navigate('/search', {
+                                    state: { searchMovie: searchMovie }
+                                });
+                            }}
+                        >
+                            Search
+                        </Button>
                     </div>
                     {!isLoggedIn ? (
                         <div className="flex items-center gap-2">
                             <Button
+                                type="submit"
                                 onClick={() => {
                                     setSignInDialogOpen(true);
                                 }}
@@ -78,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                                     setSignUpDialogOpen(true);
                                 }}
                                 className="bg-transparent hover:bg-transparent"
-                                >
+                            >
                                 Sign up
                             </Button>
                         </div>
@@ -110,8 +125,19 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                         <Input
                             type="email"
                             placeholder="What do you want to watch?"
+                            value={searchMovie}
+                            onChange={(e) => setSearchMovie(e.target.value)}
                         />
-                        <Button type="submit">Search</Button>
+                        <Button
+                            type="submit"
+                            onClick={() => {
+                                navigate('/search', {
+                                    state: { searchMovie: searchMovie }
+                                });
+                            }}
+                        >
+                            Search
+                        </Button>
                     </div>
                 </div>
             </div>
