@@ -10,7 +10,7 @@ import imdb from '@/assets/imdb.png';
 import { MovieDetailDialog } from './Dialogs/movie-detail';
 import { useState } from 'react';
 
-export function HorizontalCarousel({ movies }) {
+export function HorizontalCarousel({ movies }: { movies: any[]}) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [selectedMovie, setSelectedMovie] = useState<any>();
 
@@ -29,7 +29,7 @@ export function HorizontalCarousel({ movies }) {
                 }}
             >
                 <CarouselContent className="w-[80vw] h-[50vh]">
-                    {movies.map((movie, index) => (
+                    {movies.map((movie: any, index: any) => (
                         <CarouselItem
                             key={index}
                             className="pl-4 md:basis-1/2 lg:basis-1/4"

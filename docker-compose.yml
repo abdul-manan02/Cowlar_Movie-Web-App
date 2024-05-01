@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  backend:
+    image: abdulmanan02/cowlarbackend:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - backend-network
+
+  frontend:
+    image: abdulmanan02/cowlarfrontend:latest
+    ports:
+      - "80:80"
+    networks:
+      - backend-network
+    depends_on:
+      - backend
+
+networks:
+  backend-network:

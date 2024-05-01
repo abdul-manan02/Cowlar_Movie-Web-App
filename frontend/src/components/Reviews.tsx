@@ -3,11 +3,9 @@ import { EditReview } from './Dialogs/EditReview';
 import { useState } from 'react';
 
 export default function Reviews({
-    reviews,
-    setReviews
+    reviews
 }: {
-    reviews: any[];
-    setReviews: React.Dispatch<React.SetStateAction<any[]>>;
+    reviews: any[]
 }) {
     const [editReviewDialog, setEditReviewDialog] = useState<boolean>(false);
     const [reviewToEdit, setReviewToEdit] = useState<any>(null);
@@ -29,7 +27,7 @@ export default function Reviews({
                 <div className="px-5 pb-10">
                     {reviews.map((review, index) => (
                         <blockquote
-                            className="mt-4 border-2 border-blue-300 rounded-lg mb-2 p-4"
+                            className="mt-4 border-2 border-blue-300 rounded-lg mb-2 p-4 cursor-pointer"
                             key={index}
                             onClick={() => openEditModal(review)}
                         >

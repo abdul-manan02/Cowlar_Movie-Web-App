@@ -4,7 +4,7 @@ import { HorizontalCarousel } from './horizontal-carousel';
 import { EmblaOptionsType } from 'embla-carousel';
 import EmblaCarousel from './EmblaCarousel';
 import { useAuth } from './AuthContext';
-import Reviews from './Reviews'
+import Reviews from './Reviews';
 
 export default function HomePage() {
     const OPTIONS: EmblaOptionsType = {
@@ -156,25 +156,27 @@ export default function HomePage() {
                 </div>
             )}
 
-            {isLoading ? (
-                <>
-                    <h1 className="ml-20 mt-7 mb-[-5] text-2xl font-bold mt-30">
-                        Your Reviews
-                    </h1>
-                    <div className="flex justify-center items-center">
-                        <p>Loading Your Reviews...</p>
+            {isLoggedIn ? (
+                isLoading ? (
+                    <>
+                        <h1 className="ml-20 mt-7 mb-[-5] text-2xl font-bold mt-30">
+                            Your Reviews
+                        </h1>
+                        <div className="flex justify-center items-center">
+                            <p>Loading Your Reviews...</p>
+                        </div>
+                    </>
+                ) : (
+                    <div className="ml-20 mt-20">
+                        <h1 className="mt-7 mb-[-5] text-2xl font-bold mt-30">
+                            Your Reviews
+                        </h1>
+                        <section className="ml-5">
+                            <Reviews reviews={reviews}></Reviews>
+                        </section>
                     </div>
-                </>
-            ) : (
-                <div className="ml-20 mt-20">
-                    <h1 className="mt-7 mb-[-5] text-2xl font-bold mt-30">
-                        Your Reviews
-                    </h1>
-                    <section className='ml-5'>
-                        <Reviews reviews={reviews} setReviews={setReviews}></Reviews>
-                    </section>
-                </div>
-            )}
+                )
+            ) : null}
         </div>
     );
 }
