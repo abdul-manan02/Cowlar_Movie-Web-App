@@ -51,7 +51,6 @@ const getMovieReviews = async (req, res) => {
     }
 }
 
-
 const getUserReviews = async (req, res) => {
     const userId = req.userId;
     try {

@@ -3,11 +3,11 @@ const router = express.Router();
 import authMiddleware from '../utils/authMiddleware.js';
 
 import{
-    createUsertTable, dropUsertTable, signUp, signIn
+    createUserTable, dropUserTable, signUp, signIn
 } from '../services/user.service.js';
 
-router.post('/createTable', createUsertTable);
-router.delete('/dropTable', dropUsertTable);
+router.post('/createTable', createUserTable);
+router.delete('/dropTable', dropUserTable);
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 

@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const createUsertTable = async (req, res) => {
+const createUserTable = async (req, res) => {
   try {
     await User.sync({ force: false });
     res.status(200).json({ msg: "User table created successfully" });
@@ -11,7 +11,7 @@ const createUsertTable = async (req, res) => {
   }
 };
 
-const dropUsertTable = async (req, res) => {
+const dropUserTable = async (req, res) => {
   try {
     await User.drop();
     res.status(200).json({ msg: "User table dropped successfully" });
@@ -68,4 +68,4 @@ const signIn = async (req, res) => {
   }
 };
 
-export { createUsertTable, dropUsertTable, signUp, signIn };
+export { createUserTable, dropUserTable, signUp, signIn };
