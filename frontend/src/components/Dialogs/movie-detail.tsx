@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import imdb from '@/assets/imdb.png';
+import imdb from '@/assets/imdb.ico';
 import { ScrollArea } from '../ui/scroll-area';
 import { Ratings } from '../rating';
-import man from '@/assets/man.png';
+import man from '@/assets/man.ico';
 import { Textarea } from '../ui/textarea';
 import { useAuth } from '../AuthContext';
 import { useEffect, useState } from 'react';

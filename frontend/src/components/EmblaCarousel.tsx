@@ -3,7 +3,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import { DotButton, useDotButton } from './EmblaCarouselDotButton';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import imdb from '@/assets/imdb.png';
+import imdb from '@/assets/imdb.ico';
 import { useState } from 'react';
 import { MovieDetailDialog } from './Dialogs/movie-detail';
 

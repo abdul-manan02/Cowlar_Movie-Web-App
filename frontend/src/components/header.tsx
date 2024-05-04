@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo.ico';
 import { SignIn } from './Dialogs/SignIn';
 import { SignUp } from './Dialogs/SignUp';
 import { AddMovie } from './Dialogs/AddMovie';

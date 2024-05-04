@@ -6,7 +6,7 @@ import {
     CarouselPrevious
 } from '@/components/ui/carousel';
 import { Card } from './ui/card';
-import imdb from '@/assets/imdb.png';
+import imdb from '@/assets/imdb.ico';
 import { MovieDetailDialog } from './Dialogs/movie-detail';
 import { useState } from 'react';
 
