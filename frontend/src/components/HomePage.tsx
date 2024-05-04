@@ -94,6 +94,8 @@ export default function HomePage() {
             setIsLoading(true);
             try {
                 const data = await fetchSearchData(searchMovieParams);
+                console.log(searchMovieParams)
+                console.log(data)
                 setSearchMovies(data);
             } catch (error) {
                 console.error('Error fetching search data:', error);

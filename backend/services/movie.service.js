@@ -74,8 +74,7 @@ const searchMovie = async (req, res) => {
       },
     });
 
-    if (movies.length === 0) res.status(404).json({ error: "Movie not found" });
-    else res.status(200).json(movies);
+    res.status(200).json(movies);
   } catch (error) {
     res.status(500).json({ error: error.toString() });
   }
