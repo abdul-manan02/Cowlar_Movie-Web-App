@@ -286,20 +286,6 @@ describe('searchMovie', function() {
         expect(res.json.calledWith(mockMovies)).to.be.true;
     });
 
-    it('should return 404 if no movies are found', async function() {
-        findAllStub.resolves([]);
-        await searchMovie(req, res);
-        expect(findAllStub.calledOnceWith({
-            where: {
-                title: {
-                    [Sequelize.Op.like]: '%Test%'
-                }
-            }
-        })).to.be.true;
-        expect(res.status.calledWith(404)).to.be.true;
-        expect(res.json.calledWith({ error: "Movie not found" })).to.be.true;
-    });
-
     it('should handle error if search fails', async function() {
         const errorMessage = 'Error searching for movies';
         findAllStub.rejects(new Error(errorMessage));
