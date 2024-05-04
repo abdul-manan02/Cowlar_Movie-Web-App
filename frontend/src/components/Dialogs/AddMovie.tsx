@@ -21,14 +21,14 @@ export function AddMovie({
 }: AddMovieProps) {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [releaseYear, setReleaseYear] = useState<number | null>(null);
+    const [releaseYear, setReleaseYear] = useState<number>(new Date().getFullYear());
     const [imageUrl, setImageUrl] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
 
     const setStatesToEmpty = () => {
         setTitle('');
         setDescription('');
-        setReleaseYear(null);
+        setReleaseYear(new Date().getFullYear());
         setImageUrl('');
         setVideoUrl('');
     }
