@@ -119,7 +119,14 @@ export default function HomePage() {
                 isLoading ? (
                     <div>Searching ...</div>
                 ) : searchMovies.length > 0 ? (
+                    <>
+                    <div className='flex justify-center'>
+                        <h1 className="mb-10 text-2xl font-bold">
+                            Search Results
+                        </h1>
+                    </div>
                         <Search searchMovies={searchMovies} />
+                    </>
                 ) : (
                     <div>No Movie Found</div>
                 )
