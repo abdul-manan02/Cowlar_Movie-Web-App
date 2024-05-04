@@ -7,6 +7,7 @@ import man from '@/assets/man.png';
 import { Textarea } from '../ui/textarea';
 import { useAuth } from '../AuthContext';
 import { useEffect, useState } from 'react';
+import { fetchReviewsForMovie, addReviewForMovie } from '@/apiCalls/review-apiCalls';
 
 export function MovieDetailDialog({
     dialogOpen,
@@ -23,68 +24,49 @@ export function MovieDetailDialog({
     const [newReview, setNewReview] = useState('');
     const [showVideo, setShowVideo] = useState(false);
 
+    const closeDialog = () => {
+        setNewReview('');
+        setDialogOpen(false);
+    }
+
     useEffect(() => {
         if (dialogOpen) {
-            setShowVideo(false);
+          setShowVideo(false);
         }
-    }, [dialogOpen]);
-
-    useEffect(() => {
-        const fetchReviews = async () => {
-            const url = `http://localhost:3000/api/v1/reviews/movieId/${movie.id}`;
-            const response = await fetch(url, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization:
-                        'Bearer ' + `${localStorage.getItem('token')}`
-                },
-                method: 'GET'
-            });
-            const result = await response.json();
-            if (result.length > 0) {
-                setReviews(result);
-            } else {
-                setReviews([]);
+      }, [dialogOpen]);
+      
+      useEffect(() => {
+        const fetchData = async () => {
+          if (movie) {
+            try {
+              const token = localStorage.getItem('token');
+              const reviews = await fetchReviewsForMovie(movie._id, token);
+              setReviews(reviews.length > 0 ? reviews : []);
+            } catch (error) {
+              console.error('Error fetching reviews:', error);
             }
+          }
         };
-
-        if (movie) {
-            fetchReviews();
-        }
-    }, [movie]);
-
-    const addReview = async () => {
+      
+        fetchData();
+      }, [movie]);
+      
+      const addReview = async () => {
         try {
-            const url = 'http://localhost:3000/api/v1/reviews';
-            const data = {
-                movie_id: movie.id,
-                rating: 3,
-                review: newReview
-            };
-            const response = await fetch(url, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization:
-                        'Bearer ' + `${localStorage.getItem('token')}`
-                },
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-            if (response.status === 200) {
-                setReviewAdded(true);
-                alert(
-                    'Review has been added, you can reload the page to view it'
-                );
-            } else {
-                throw new Error('Failed to add review');
-            }
-        } catch (error: any) {
-            alert('Error: ' + error.message);
+          const token = localStorage.getItem('token');
+          const success = await addReviewForMovie(movie._id, newReview, token);
+          if (success) {
+            setNewReview('')
+            setReviewAdded(true);
+            alert('Review has been added, you can reload the page to view it');
+          }
+        } catch (error) {
+          alert('Error: ' + error.message);
         }
-    };
+      };
 
     return (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={dialogOpen} onOpenChange={closeDialog}>
             <DialogContent className="h-[85vh] w-[70vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <ScrollArea className="max-h-[800px]">
                     <div className="flex flex-col">
@@ -199,22 +181,6 @@ export function MovieDetailDialog({
                                                         />
                                                     </div>
                                                 </span>
-                                                {/* {(checkUser(review.user.id)) && (
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                    className="h-6 w-6 ml-auto cursor-pointer"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                                    />
-                                                </svg>
-                                                )} */}
                                             </div>
 
                                             <div className="mt-2 relative z-20 text-base ml-14 leading-[1.6] text-white/70 font-normal">

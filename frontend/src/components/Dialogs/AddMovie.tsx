@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { addMovie } from '@/apiCalls/movie-apiCalls';
 
 interface MovieState {
     movies: any[];
@@ -23,45 +24,41 @@ export function AddMovie({
     const [releaseYear, setReleaseYear] = useState<string | ''>('');
     const [imageUrl, setImageUrl] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
-    
+
+    const setStatesToEmpty = () => {
+        setTitle('');
+        setDescription('');
+        setReleaseYear('');
+        setImageUrl('');
+        setVideoUrl('');
+    }
+
+    const closeDialog = () => {
+        setStatesToEmpty()
+        setAddMovieDialogOpen(false);
+    }
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/movies',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: 'Bearer ' + localStorage.getItem('token')
-                    },
-                    body: JSON.stringify({
-                        title,
-                        description,
-                        release_year: releaseYear,
-                        image_url: imageUrl,
-                        video_url: videoUrl
-                    })
-                }
+            const result = await addMovie(
+                title,
+                description,
+                releaseYear,
+                imageUrl,
+                videoUrl
             );
-            if (response.status === 200) {
-                const result = await response.json();
 
-                movieState.setMovies((prevMovies) => [
-                    ...prevMovies,
-                    result
-                ]);
-                setAddMovieDialogOpen(false);
-            } else {
-                alert('Error adding movie');
-            }
-        } catch (error: any) {
-            console.log(error.message);
+            movieState.setMovies((prevMovies) => [...prevMovies, result]);
+            setStatesToEmpty()
+            setAddMovieDialogOpen(false);
+        } catch (error) {
+            alert('Error adding movie');
         }
     };
 
     return (
-        <Dialog open={addMovieDialogOpen} onOpenChange={setAddMovieDialogOpen}>
+        <Dialog open={addMovieDialogOpen} onOpenChange={closeDialog}>
             <DialogContent className="h-[30vw] w-[40vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <form onSubmit={handleSubmit}>
                     <div className="flex flex-col items-center justify-center">
@@ -75,34 +72,44 @@ export function AddMovie({
                                 className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
+                                autoComplete="off"
                             />
+
                             <textarea
                                 placeholder="Description"
                                 className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                autoComplete="off"
                             />
+
                             <input
                                 type="text"
                                 placeholder="Release Year"
                                 className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={releaseYear}
                                 onChange={(e) => setReleaseYear(e.target.value)}
+                                autoComplete="off"
                             />
+
                             <input
                                 type="text"
                                 placeholder="Image URL"
                                 className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={imageUrl}
                                 onChange={(e) => setImageUrl(e.target.value)}
+                                autoComplete="off"
                             />
+
                             <input
                                 type="text"
                                 placeholder="Video URL"
                                 className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={videoUrl}
                                 onChange={(e) => setVideoUrl(e.target.value)}
+                                autoComplete="off"
                             />
+
                             <Button type="submit" className="w-[40%] mx-auto">
                                 Add Movie
                             </Button>

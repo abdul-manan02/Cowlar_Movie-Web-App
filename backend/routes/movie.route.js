@@ -1,29 +1,21 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import authMiddleware from '../utils/authMiddleware.js'
+import authMiddleware from "../utils/authMiddleware.js";
 
-import{
-    createMovieTable,
-    dropMovieTable,
-    getMovies,
-    getMoviesForUser,
-    createMovies,
-    getMovie,
-    deleteMovie,
-    searchMovie
-} from '../controllers/movie.controller.js';
+import {
+  createMovieTable,
+  dropMovieTable,
+  createMovie,
+  getMovies,
+  getUserMovies,
+  searchMovie,
+} from "../services/movie.service.js";
 
-router.post('/createTable', createMovieTable);
-router.delete('/dropTable', dropMovieTable);
+router.post("/createTable", createMovieTable);
+router.delete("/dropTable", dropMovieTable);
 
-router.route('/').post(authMiddleware, createMovies).get(getMovies);
+router.route("/").post(authMiddleware, createMovie).get(getMovies);
+router.route("/userMovies").get(authMiddleware, getUserMovies);
+router.route("/search").get(searchMovie);
 
-router.route('/movieId/:id')
-    .get(getMovie)
-    //.delete(authMiddleware, deleteMovie);
-    .delete( deleteMovie);
-
-    router.route('/search').get(searchMovie);
-router.route('/userMovies').get(authMiddleware, getMoviesForUser);
-
-export default router
+export default router;

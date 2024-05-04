@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { editReview, deleteReview } from '@/apiCalls/review-apiCalls';
 
 export function EditReview({
     editReviewDialog,
@@ -13,53 +14,53 @@ export function EditReview({
 }) {
     const [description, setDescription] = useState<string>('');
 
-    const editReview = async (e: React.FormEvent<HTMLButtonElement>) => {
+    const closeDialog = () => {
+        setDescription('');
+        setEditReviewDialog(false);
+    }
+
+    const edit_review = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (description === '') {
             alert('Description cannot be empty');
             return;
         }
-            const url = `http://localhost:3000/api/v1/reviews/reviewId/${review.id}`;
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    description
-                })
-            });
-            if (response.status === 200) {
-                alert(
-                    'Review has been added, you can reload the page to view it'
-                );
-                setEditReviewDialog(false);
-            } else {
-                alert('Error editing review');
+        try {
+            const token = localStorage.getItem('token');
+            if (token === null) {
+                throw new Error('Token is null');
             }
+            const success = await editReview(review._id, description, token);
+            if (success) {
+                alert('Review has been edited');
+                setDescription('');
+                setEditReviewDialog(false);
+            }
+        } catch (error: any) {
+            alert('Error: ' + error.message);
+        }
     };
 
-    const deleteReview = async (e: React.FormEvent<HTMLButtonElement>) => {
+    const delete_review = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const url = `http://localhost:3000/api/v1/reviews/reviewId/${review.id}`;
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem('token')
+        try {
+            const token = localStorage.getItem('token');
+            if (token === null) {
+                throw new Error('Token is null');
             }
-        });
-        if (response.status === 200) {
-            alert('Review has been deleted');
-            setEditReviewDialog(false);
-        } else {
-            alert('Error deleting review');
+            const success = await deleteReview(review._id, token);
+            if (success) {
+                alert('Review has been deleted');
+                setDescription('');
+                setEditReviewDialog(false);
+            }
+        } catch (error: any) {
+            alert('Error: ' + error.message);
         }
     };
 
     return (
-        <Dialog open={editReviewDialog} onOpenChange={setEditReviewDialog}>
+        <Dialog open={editReviewDialog} onOpenChange={closeDialog}>
             <DialogContent className="h-[30vw] w-[40vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <form>
                     <div className="flex flex-col items-center justify-center">
@@ -77,14 +78,14 @@ export function EditReview({
                                 <Button
                                     type="submit"
                                     className="w-[20%] mx-auto bg-transparent focus:bg-transparent"
-                                    onClick={editReview}
+                                    onClick={edit_review}
                                 >
                                     Edit Review
                                 </Button>
                                 <Button
                                     type="submit"
                                     className="w-[20%] mx-auto bg-transparent focus:bg-transparent"
-                                    onClick={deleteReview}
+                                    onClick={delete_review}
                                 >
                                     Delete Review
                                 </Button>

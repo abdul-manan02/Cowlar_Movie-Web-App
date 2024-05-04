@@ -1,61 +1,39 @@
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import BaseSQLModel from '../utils/baseSqlModel.js';
-import db from '../utils/db.js'
-import userSchema from '../sqlSchemas/user.schema.js';
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../utils/db.js";
+import { v4 as uuidv4 } from "uuid";
 
-class UserModel extends BaseSQLModel {
-  constructor() {
-    super('User');
+class User extends Model {}
+
+User.init(
+  {
+    _id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: () => uuidv4(),
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "User",
   }
+);
 
-  async createTable() {
-    try {
-      await db.query(userSchema, [this.tableName]);
-    } catch (error) {
-      throw new Error(`Failed to create table: ${error.message}`);
-    }
-  }
-
-  async create(data) {
-    try {
-      const insertQuery = `INSERT INTO ?? (name, email, username, password) VALUES (?, ?, ?, ?)`;
-      const hashedPassword = await bcrypt.hash(data.password, 12);
-      const values = [data.name, data.email, data.username, hashedPassword];
-      
-      await db.query(insertQuery, [this.tableName, ...values]);
-
-      const selectQuery = `SELECT * FROM ?? ORDER BY created_at DESC LIMIT 1`;
-      const [rows] = await db.query(selectQuery, [this.tableName]);
-      return rows[0].id;
-    } catch (error) {
-      throw new Error(`Failed to create user: ${error.message}`);
-    }
-  }
-
-  async login(data){
-    const email = data.email;
-    const password = data.password;
-
-    try{
-      const query = `SELECT * FROM ?? WHERE email = ?`;
-      const [rows] = await db.query(query, [this.tableName, email]);
-      if(rows.length === 0){
-        throw new Error('User not found');
-      }
-      const user = rows[0];
-      const isPasswordCorrect = await bcrypt.compare(password, user.password);
-      if(isPasswordCorrect){
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_KEY, { expiresIn: '24h' });
-        return { user, token };
-      }
-      else
-        throw new Error('Invalid password');
-    }
-    catch(error){
-      throw new Error(`Failed to login: ${error.message}`);
-    }
-  }
-}
-
-export default UserModel;
+export default User;

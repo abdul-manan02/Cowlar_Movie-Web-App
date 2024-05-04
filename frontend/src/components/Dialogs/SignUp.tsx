@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { signUp } from '@/apiCalls/user-apiCalls';
 
 export function SignUp({
     signUpDialogOpen,
@@ -14,26 +15,42 @@ export function SignUp({
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const setStatesToEmpty = () => {
+        setName('');
+        setUsername('');
+        setEmail('');
+        setPassword('');
+    }
+    
+    const closeDialog = () => {
+        setStatesToEmpty();
+        setSignUpDialogOpen(false);
+    }
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        const response = await fetch('http://localhost:3000/api/v1/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, email, username, password })
-        });
-        if(response.status === 200){
-            alert('Successfuly Signed Up');
-            setSignUpDialogOpen(false);
-        } 
-        else{
-            alert('Error');
+        try {
+            const { success, error } = await signUp(
+                name,
+                email,
+                username,
+                password
+            );
+            if (success) {
+                alert('Successfully Signed Up');
+                setStatesToEmpty();
+                setSignUpDialogOpen(false);
+            } else {
+                alert(error);
+            }
+        } catch (error) {
+            console.error('Error handling sign-up:', error);
+            alert('An error occurred during sign-up');
         }
     };
 
     return (
-        <Dialog open={signUpDialogOpen} onOpenChange={setSignUpDialogOpen}>
+        <Dialog open={signUpDialogOpen} onOpenChange={closeDialog}>
             <DialogContent className="h-[55vh] w-[30vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <form onSubmit={handleSubmit}>
                     <div className="flex flex-col items-center justify-center">
@@ -47,6 +64,7 @@ export function SignUp({
                                 className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                autoComplete="off"
                             />
                             <input
                                 type="text"
@@ -54,6 +72,7 @@ export function SignUp({
                                 className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                autoComplete="off"
                             />
                             <input
                                 type="email"
@@ -61,6 +80,7 @@ export function SignUp({
                                 className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="off"
                             />
                             <input
                                 type="password"
@@ -68,8 +88,11 @@ export function SignUp({
                                 className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="off"
                             />
-                            <Button type="submit" className='w-[40%] mx-auto'>Sign Up</Button>
+                            <Button type="submit" className="w-[40%] mx-auto">
+                                Sign Up
+                            </Button>
                         </div>
                     </div>
                 </form>

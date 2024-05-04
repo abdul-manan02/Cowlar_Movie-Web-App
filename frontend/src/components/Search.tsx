@@ -1,84 +1,82 @@
-import { useEffect, useState } from 'react';
-import { HorizontalCarousel } from './horizontal-carousel';
-import { useLocation } from 'react-router-dom';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { useNavigate } from 'react-router-dom';
-import logo from '@/assets/logo.png';
+import React, { useState } from 'react';
+import { Card } from './ui/card';
+import { MovieDetailDialog } from './Dialogs/movie-detail';
+import imdb from '@/assets/imdb.png';
 
-export default function Search() {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const searchMovieReceived = location.state.searchMovie;
-
-    const [searchMovie, setSearchMovie] = useState<string>(searchMovieReceived);
-    const [movies, setMovies] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    const fetchData = async () => {
-        setIsLoading(true);
-        const url = `http://localhost:3000/api/v1/movies/search?title=${searchMovie}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log(data);
-            setMovies(data);
-        } catch (error) {
-            console.error(error);
-        }
-        setIsLoading(false);
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
+export default function Search({ searchMovies }: { searchMovies: any }) {
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const [selectedMovie, setSelectedMovie] = useState<any>();
 
     return (
         <>
-            <img
-                src={logo}
-                alt="Main logo"
-                className="cursor-pointer ml-5 mt-5"
-                onClick={() => {
-                    navigate('/');
-                }}
+            <MovieDetailDialog
+                setDialogOpen={setDialogOpen}
+                dialogOpen={dialogOpen}
+                movie={selectedMovie}
             />
-            <div className="w-screen h-screen flex flex-col items-center mt-4">
-                <div className="flex w-full max-w-sm items-center space-x-4">
-                    <Input
-                        type="email"
-                        placeholder="What do you want to watch?"
-                        value={searchMovie}
-                        onChange={(e) => setSearchMovie(e.target.value)}
-                    />
-                    <Button
-                        type="submit"
-                        onClick={() => {
-                            fetchData();
-                        }}
-                    >
-                        Search
-                    </Button>
-                </div>
 
-                <div>
-                    {isLoading ? (
-                        <p className="text-center mt-10 text-2xl font-bold">
-                            Loading...
-                        </p>
-                    ) : (
-                        <section className="pt-10 pb-5 flex justify-center items-center flex-col">
-                            <div className="">
-                                {movies.length > 0 ? (
-                                    <HorizontalCarousel movies={movies} />
-                                ) : (
-                                    <p>No movies found</p>
-                                )}
+            {searchMovies.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pr-4 pl-4">
+                    {searchMovies.map((movie) => (
+                        <Card
+                            key={movie.id}
+                            className="overflow-hidden flex flex-col h-auto w-full cursor-pointer"
+                        >
+                            <img
+                                src={movie.image_url}
+                                alt="Movie image"
+                                className="cursor-pointer flex-shrink-0 w-full h-auto"
+                                onClick={() => {
+                                    setSelectedMovie(movie);
+                                    setDialogOpen(true);
+                                }}
+                            />
+                            <div className="flex flex-col flex-grow p-4">
+                                <p className="text-gray-100 text-sm">
+                                    {movie.release_year}
+                                </p>
+                                <h1 className="text-white text-xl font-bold">
+                                    {movie.title}
+                                </h1>
                             </div>
-                        </section>
-                    )}
+                        </Card>
+                    ))}
                 </div>
-            </div>
+            ) : // <div className="flex flex-wrap justify-evenly gap-2 gap-y-8 p-4">
+            //     {searchMovies.map((movie: any, index: any) => (
+            //         <Card className="overflow-hidden w-[20%] h-[20vw]">
+            //             <img
+            //                 src={movie.image_url}
+            //                 alt="Movie image"
+            //                 className="cursor-pointer"
+            //                 onClick={() => {
+            //                     setSelectedMovie(movie);
+            //                     setDialogOpen(true);
+            //                 }}
+            //             />
+            //             <div className="flex-col mt-2 mb-2 ml-2 mr-1">
+            //                 <p className="text-gray-100 text-sm">
+            //                     {movie.release_year}
+            //                 </p>
+            //                 <h1 className="text-white text-xl font-bold">
+            //                     {movie.title}
+            //                 </h1>
+            //                 <div className="flex items-center gap-2">
+            //                     <img
+            //                         src={imdb}
+            //                         alt="imdb logo"
+            //                         className="w-10"
+            //                     />
+            //                     <p className="text-lg font-semibold">
+            //                         {movie.rating}
+            //                     </p>
+            //                 </div>
+            //                 <p className="text-base">{movie.description}</p>
+            //             </div>
+            //         </Card>
+            //     ))}
+            // </div>
+            null}
         </>
     );
 }

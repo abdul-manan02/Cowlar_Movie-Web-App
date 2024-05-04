@@ -6,26 +6,35 @@ import { SignIn } from './Dialogs/SignIn';
 import { SignUp } from './Dialogs/SignUp';
 import { AddMovie } from './Dialogs/AddMovie';
 import { useAuth } from '@/components/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 interface MovieState {
     movies: any[];
     setMovies: React.Dispatch<React.SetStateAction<any[]>>;
 }
-
+interface SearchMovieParamsState {
+    searchMovieParams: any[];
+    setSearchMovieParams: React.Dispatch<React.SetStateAction<string>>;
+}
 interface HeaderProps {
     movieState: MovieState;
+    searchMovieParamsState: SearchMovieParamsState;
 }
 
-const Header: React.FC<HeaderProps> = ({ movieState }) => {
-    const navigate = useNavigate();
+const Header: React.FC<HeaderProps> = ({
+    movieState,
+    searchMovieParamsState
+}) => {
     const [signInDialogOpen, setSignInDialogOpen] = useState<boolean>(false);
     const [signUpDialogOpen, setSignUpDialogOpen] = useState<boolean>(false);
     const [addMovieDialogOpen, setAddMovieDialogOpen] =
         useState<boolean>(false);
 
     const { isLoggedIn, setIsLoggedIn } = useAuth();
-    const [searchMovie, setSearchMovie] = useState<string>('');
+
+    const handleSearchInputChange = (e: any) => {
+        e.preventDefault();
+        searchMovieParamsState.setSearchMovieParams(e.target.value);
+    };
 
     return (
         <>
@@ -52,9 +61,6 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                             src={logo}
                             alt="Main logo"
                             className="cursor-pointer"
-                            onClick={() => {
-                                navigate('/');
-                            }}
                         />
                         <h1 className="hidden lg:block text-xl font-semibold">
                             Movie Mania
@@ -64,19 +70,9 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                         <Input
                             type="email"
                             placeholder="What do you want to watch?"
-                            value={searchMovie}
-                            onChange={(e) => setSearchMovie(e.target.value)}
+                            value={searchMovieParamsState.searchMovieParams}
+                            onChange={handleSearchInputChange}
                         />
-                        <Button
-                            type="submit"
-                            onClick={() => {
-                                navigate('/search', {
-                                    state: { searchMovie: searchMovie }
-                                });
-                            }}
-                        >
-                            Search
-                        </Button>
                     </div>
                     {!isLoggedIn ? (
                         <div className="flex items-center gap-2">
@@ -125,19 +121,9 @@ const Header: React.FC<HeaderProps> = ({ movieState }) => {
                         <Input
                             type="email"
                             placeholder="What do you want to watch?"
-                            value={searchMovie}
-                            onChange={(e) => setSearchMovie(e.target.value)}
+                            value={searchMovieParamsState.searchMovieParams}
+                            onChange={handleSearchInputChange}
                         />
-                        <Button
-                            type="submit"
-                            onClick={() => {
-                                navigate('/search', {
-                                    state: { searchMovie: searchMovie }
-                                });
-                            }}
-                        >
-                            Search
-                        </Button>
                     </div>
                 </div>
             </div>

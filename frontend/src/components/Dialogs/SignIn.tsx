@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useAuth } from '@/components/AuthContext';
 import { useState } from 'react';
+import { signIn } from '@/apiCalls/user-apiCalls';
 
 export function SignIn({
     signInDialogOpen,
@@ -13,33 +14,37 @@ export function SignIn({
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const { setIsLoggedIn } = useAuth()
+    const { setIsLoggedIn } = useAuth();
+
+    const setStatesToEmpty = () => {
+        setEmail('');
+        setPassword('');
+    }
+
+    const closeDialog = () => {
+        setStatesToEmpty();
+        setSignInDialogOpen(false);
+    }
     
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        const response = await fetch(
-            'http://localhost:3000/api/v1/users/login',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
+        try {
+            const { success, error } = await signIn(email, password);
+            if (success) {
+                setIsLoggedIn(true);
+                setStatesToEmpty();
+                setSignInDialogOpen(false);
+            } else {
+                alert(error);
             }
-        );
-        if(response.status === 200){
-            const result = await response.json()
-            localStorage.setItem('token', result.token)
-            setIsLoggedIn(true)
-            setSignInDialogOpen(false)
-        }
-        else{
-            alert('Invalid email or password')
+        } catch (error) {
+            console.error('Error handling form submission:', error);
+            alert('An error occurred while signing in');
         }
     };
 
     return (
-        <Dialog open={signInDialogOpen} onOpenChange={setSignInDialogOpen}>
+        <Dialog open={signInDialogOpen} onOpenChange={closeDialog}>
             <DialogContent className="h-[35vh] w-[30vw] sm:max-w-[1025px] p-0 bg-transparent/50 overflow-y-auto">
                 <form onSubmit={handleSubmit}>
                     <div className="flex flex-col items-center justify-center">
@@ -53,6 +58,7 @@ export function SignIn({
                                 className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="off"
                             />
                             <input
                                 type="password"
@@ -60,6 +66,7 @@ export function SignIn({
                                 className="w-[20vw] p-2 rounded-md text-white bg-transparent"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="off"
                             />
                             <Button type="submit" className="w-[40%] mx-auto">
                                 Sign In
