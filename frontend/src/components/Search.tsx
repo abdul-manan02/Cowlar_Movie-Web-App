@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card } from './ui/card';
 import { MovieDetailDialog } from './Dialogs/movie-detail';
-import imdb from '@/assets/imdb.png';
 
 export default function Search({ searchMovies }: { searchMovies: any }) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -17,7 +16,7 @@ export default function Search({ searchMovies }: { searchMovies: any }) {
 
             {searchMovies.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pr-4 pl-4">
-                    {searchMovies.map((movie) => (
+                    {searchMovies.map((movie: any) => (
                         <Card
                             key={movie.id}
                             className="overflow-hidden flex flex-col h-auto w-full cursor-pointer"

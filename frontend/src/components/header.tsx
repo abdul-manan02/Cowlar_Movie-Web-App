@@ -12,7 +12,7 @@ interface MovieState {
     setMovies: React.Dispatch<React.SetStateAction<any[]>>;
 }
 interface SearchMovieParamsState {
-    searchMovieParams: any[];
+    searchMovieParams: string;
     setSearchMovieParams: React.Dispatch<React.SetStateAction<string>>;
 }
 interface HeaderProps {

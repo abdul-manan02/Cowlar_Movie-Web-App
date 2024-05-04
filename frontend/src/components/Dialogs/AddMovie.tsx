@@ -21,14 +21,14 @@ export function AddMovie({
 }: AddMovieProps) {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [releaseYear, setReleaseYear] = useState<string | ''>('');
+    const [releaseYear, setReleaseYear] = useState<number | null>(null);
     const [imageUrl, setImageUrl] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
 
     const setStatesToEmpty = () => {
         setTitle('');
         setDescription('');
-        setReleaseYear('');
+        setReleaseYear(null);
         setImageUrl('');
         setVideoUrl('');
     }
@@ -88,7 +88,7 @@ export function AddMovie({
                                 placeholder="Release Year"
                                 className="w-[30vw] p-2 rounded-md text-white bg-transparent"
                                 value={releaseYear}
-                                onChange={(e) => setReleaseYear(e.target.value)}
+                                onChange={(e) => setReleaseYear(Number(e.target.value))}
                                 autoComplete="off"
                             />
 
