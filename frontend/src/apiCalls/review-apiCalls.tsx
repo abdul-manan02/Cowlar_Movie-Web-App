@@ -32,10 +32,9 @@ export const addReviewForMovie = async (movieId: any, newReview: any, token: any
     const url = `${import.meta.env.VITE_BASE_URL}/reviews`;
     const data = {
         movie_id: movieId,
-        rating: 3, // Assuming a default rating for new reviews
+        rating: 3,
         review: newReview
     };
-    console.log(data)
     const response = await fetch(url, {
         headers: {
             'Content-Type': 'application/json',

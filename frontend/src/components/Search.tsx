@@ -18,7 +18,7 @@ export default function Search({ searchMovies }: { searchMovies: any }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pr-4 pl-4">
                     {searchMovies.map((movie: any) => (
                         <Card
-                            key={movie.id}
+                            key={movie._id}
                             className="overflow-hidden flex flex-col h-auto w-full cursor-pointer"
                         >
                             <img
