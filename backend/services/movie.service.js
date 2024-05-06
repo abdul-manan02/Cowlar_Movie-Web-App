@@ -1,42 +1,20 @@
-import Sequelize from 'sequelize';
 import Movie from "../models/movie.model.js";
+import Sequelize from "sequelize";
 
-const createMovieTable = async (req, res) => {
+const createMovieHandler = async (movieData, userId) => {
   try {
-    await Movie.sync({ force: false });
-    res.status(200).json({ msg: "Movie table created successfully" });
+    const modifiedMovieData = {
+      ...movieData,
+      user_id: userId,
+    };
+    const movie = await Movie.create(modifiedMovieData);
+    return movie;
   } catch (error) {
-    res.status(500).json({ error: error.toString() });
+    throw error;
   }
 };
 
-const dropMovieTable = async (req, res) => {
-  try {
-    await Movie.drop();
-    res.status(200).json({ msg: "Movie table dropped successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.toString() });
-  }
-};
-
-const createMovie = async (req, res) => {
-  const modifiedBody = {
-    ...req.body,
-    user_id: req.userId,
-  };
-  try {
-    const movie = await Movie.create(modifiedBody);
-    res.status(200).json(movie);
-  } catch (error) {
-    res.status(500).json({ error: error.toString() });
-  }
-};
-
-const getMovies = async (req, res) => {
-  let sortBy;
-  if (req.query.sortBy === "latest" || req.query.sortBy === "rating") {
-    sortBy = req.query.sortBy;
-  }
+const getMoviesHandler = async (sortBy) => {
   try {
     let options = {};
     if (sortBy === "latest") {
@@ -44,27 +22,25 @@ const getMovies = async (req, res) => {
     } else if (sortBy === "rating") {
       options.order = [["rating", "DESC"]];
     }
-    const movies = await Movie.findAll();
-    res.status(200).json(movies);
+    const movies = await Movie.findAll(options);
+    return movies;
   } catch (error) {
-    res.status(500).json({ error: error.toString() });
+    throw error;
   }
 };
 
-const getUserMovies = async (req, res) => {
+const getUserMoviesHandler = async (userId) => {
   try {
     const movies = await Movie.findAll({
-      where: { user_id: req.userId },
+      where: { user_id: userId },
     });
-    res.status(200).json(movies);
+    return movies;
   } catch (error) {
-    res.status(500).json({ error: error.toString() });
+    throw error;
   }
 };
 
-const searchMovie = async (req, res) => {
-  const title = req.query.title;
-
+const searchMovieHandler = async (title) => {
   try {
     const movies = await Movie.findAll({
       where: {
@@ -73,18 +49,10 @@ const searchMovie = async (req, res) => {
         },
       },
     });
-
-    res.status(200).json(movies);
+    return movies;
   } catch (error) {
-    res.status(500).json({ error: error.toString() });
+    throw error;
   }
 };
 
-export {
-  createMovieTable,
-  dropMovieTable,
-  createMovie,
-  getMovies,
-  getUserMovies,
-  searchMovie,
-};
+export { createMovieHandler, getMoviesHandler, getUserMoviesHandler, searchMovieHandler };

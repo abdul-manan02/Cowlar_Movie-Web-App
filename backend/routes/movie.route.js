@@ -3,16 +3,12 @@ const router = express.Router();
 import authMiddleware from "../utils/authMiddleware.js";
 
 import {
-  createMovieTable,
-  dropMovieTable,
   createMovie,
   getMovies,
   getUserMovies,
   searchMovie,
-} from "../services/movie.service.js";
+} from "../controllers/movie.controller.js";
 
-router.post("/createTable", createMovieTable);
-router.delete("/dropTable", dropMovieTable);
 
 router.route("/").post(authMiddleware, createMovie).get(getMovies);
 router.route("/userMovies").get(authMiddleware, getUserMovies);
