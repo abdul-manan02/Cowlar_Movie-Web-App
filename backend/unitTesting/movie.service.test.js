@@ -1,12 +1,14 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import Movie from "../models/movie.model.js";
+import Review from "../models/review.model.js";
 import Sequelize from "sequelize";
 import {
   createMovieHandler,
   getMoviesHandler,
   getUserMoviesHandler,
   searchMovieHandler,
+  deleteMovieHandler,
 } from "../services/movie.service.js";
 
 describe("Movie Service", () => {
@@ -222,6 +224,62 @@ describe("Movie Service", () => {
         },
       };
       expect(findAllStub.calledOnceWith(expectedOptions)).to.be.true;
+    });
+  });
+
+  describe("deleteMovieHandler", function () {
+    let reviewDestroyStub;
+    let movieDestroyStub;
+
+    beforeEach(function () {
+      reviewDestroyStub = sinon.stub(Review, "destroy");
+      movieDestroyStub = sinon.stub(Movie, "destroy");
+    });
+
+    afterEach(function () {
+      reviewDestroyStub.restore();
+      movieDestroyStub.restore();
+    });
+
+    it("should delete a movie successfully", async function () {
+      const movieId = 1;
+      const expectedResult = { count: 1 };
+      reviewDestroyStub.resolves(expectedResult);
+      movieDestroyStub.resolves(expectedResult);
+
+      const result = await deleteMovieHandler(movieId);
+
+      expect(reviewDestroyStub.calledOnceWith({ where: { movie_id: movieId } }))
+        .to.be.true;
+      expect(
+        movieDestroyStub.calledOnceWith({
+          where: { _id: movieId },
+          cascade: true,
+        })
+      ).to.be.true;
+      expect(result).to.deep.equal(expectedResult);
+    });
+
+    it("should handle error if deleting a movie fails", async function () {
+      const movieId = 1;
+      const errorMessage = "Error deleting movie";
+      reviewDestroyStub.resolves({ count: 1 });
+      movieDestroyStub.rejects(new Error(errorMessage));
+
+      try {
+        await deleteMovieHandler(movieId);
+      } catch (error) {
+        expect(error.message).to.equal(errorMessage);
+      }
+
+      expect(reviewDestroyStub.calledOnceWith({ where: { movie_id: movieId } }))
+        .to.be.true;
+      expect(
+        movieDestroyStub.calledOnceWith({
+          where: { _id: movieId },
+          cascade: true,
+        })
+      ).to.be.true;
     });
   });
 });

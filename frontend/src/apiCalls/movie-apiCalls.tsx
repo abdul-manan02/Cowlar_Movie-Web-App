@@ -86,3 +86,27 @@ export const fetchSearchData = async (searchMovie: any) => {
         throw error;
     }
 };
+
+export const deleteMovie = async (movieId: any) => {
+    try {
+        const response = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/movies/movieId/${movieId}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        );
+        if (response.status === 200) {
+            const result = await response.json();
+            return result;
+        } else {
+            throw new Error('Error deleting movie');
+        }
+    } catch (error) {
+        console.error('Error deleting movie:', error);
+        throw error;
+    }
+}

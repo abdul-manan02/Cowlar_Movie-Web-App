@@ -3,7 +3,7 @@ import {
   getMovieReviewsHandler,
   getUserReviewsHandler,
   updateReviewHandler,
-  deleteReviewHandler,
+  deleteReviewHandler
 } from "../services/review.service.js";
 
 const createReview = async (req, res) => {
@@ -61,5 +61,5 @@ export {
   getMovieReviews,
   getUserReviews,
   updateReview,
-  deleteReview,
+  deleteReview
 };

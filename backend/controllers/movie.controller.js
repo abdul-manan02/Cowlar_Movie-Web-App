@@ -3,6 +3,7 @@ import {
   getMoviesHandler,
   getUserMoviesHandler,
   searchMovieHandler,
+  deleteMovieHandler
 } from "../services/movie.service.js";
 
 const createMovie = async (req, res) => {
@@ -41,4 +42,14 @@ const searchMovie = async (req, res) => {
   }
 };
 
-export { createMovie, getMovies, getUserMovies, searchMovie };
+const deleteMovie = async (req, res) => {
+  try {
+    console.log(req.params)
+    const result = await deleteMovieHandler(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.toString() });
+  }
+};
+
+export { createMovie, getMovies, getUserMovies, searchMovie, deleteMovie};

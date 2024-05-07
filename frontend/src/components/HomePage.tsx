@@ -172,6 +172,7 @@ export default function HomePage() {
                                     <div className="">
                                         <HorizontalCarousel
                                             movies={latestMovies}
+                                            carouselFor = "latestMovies"
                                         />
                                     </div>
                                 )}
@@ -205,6 +206,7 @@ export default function HomePage() {
                                             <div className="">
                                                 <HorizontalCarousel
                                                     movies={myMovies}
+                                                    carouselFor = "myMovies"
                                                 />
                                             </div>
                                         )}

@@ -43,6 +43,7 @@ Movie.init(
   {
     sequelize,
     modelName: "Movie",
+    tableName: "Movie",
   }
 );
 

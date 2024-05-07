@@ -46,6 +46,7 @@ Review.init(
   {
     sequelize,
     modelName: "Review",
+    tableName: "Review",
     indexes: [
       {
         name: 'idx_movie_title',

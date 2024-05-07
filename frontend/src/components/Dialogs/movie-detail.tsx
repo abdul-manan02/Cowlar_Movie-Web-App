@@ -59,6 +59,7 @@ export function MovieDetailDialog({
             setNewReview('')
             setReviewAdded(true);
             alert('Review has been added, you can reload the page to view it');
+            setDialogOpen(false)
           }
         } catch (error: any) {
           alert('Error: ' + error.message);

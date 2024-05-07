@@ -1,4 +1,5 @@
 import Movie from "../models/movie.model.js";
+import Review from "../models/review.model.js";
 import Sequelize from "sequelize";
 
 const createMovieHandler = async (movieData, userId) => {
@@ -55,4 +56,28 @@ const searchMovieHandler = async (title) => {
   }
 };
 
-export { createMovieHandler, getMoviesHandler, getUserMoviesHandler, searchMovieHandler };
+const deleteMovieHandler = async (movieId) => {
+  try {
+    console.log('CA A L L E D', movieId)
+    await Review.destroy({
+      where: { movie_id: movieId },
+    });
+    const result = await Movie.destroy({
+      where: {
+        _id: movieId,
+      },
+      cascade: true,
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export {
+  createMovieHandler,
+  getMoviesHandler,
+  getUserMoviesHandler,
+  searchMovieHandler,
+  deleteMovieHandler,
+};
